@@ -1,6 +1,9 @@
 ﻿import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:my_app/api/HomeApi.dart';
+import 'package:my_app/viewmodels/BannerItem.dart';
+
 class SliderSection extends StatefulWidget {
   const SliderSection({super.key});
 
@@ -13,27 +16,16 @@ class _SliderSectionState extends State<SliderSection> {
   int _currentPage = 0;
   Timer? _timer;
 
-  final List<Map<String, String>> _banners = [
-    {
-      "image":
-          "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/3.jpg",
-      "title": "春季コレクション",
-    },
-    {
-      "image":
-          "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/2.png",
-      "title": "無印良品 新生活フェア",
-    },
-    {
-      "image":
-          "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/1.png",
-      "title": "期間限定セール",
-    },
-  ];
+  final List<BannerItem> _banners = [];
 
   @override
   void initState() {
     super.initState();
+    getBannerList().then((value) {
+      setState(() {
+        _banners.addAll(value);
+      });
+    });
     _startAutoPlay();
   }
 
@@ -64,7 +56,7 @@ class _SliderSectionState extends State<SliderSection> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 220,
       child: Stack(
         children: [
           PageView.builder(
@@ -81,7 +73,7 @@ class _SliderSectionState extends State<SliderSection> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: NetworkImage(_banners[index]["image"]!),
+                    image: NetworkImage(_banners[index].imgUrl),
                     fit: BoxFit.cover,
                   ),
                 ),

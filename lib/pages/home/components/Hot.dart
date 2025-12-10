@@ -7,7 +7,7 @@ class HotSection extends StatelessWidget {
     {
       "name": "ワイヤレスイヤホン",
       "price": "¥8,900",
-      "image": "https://via.placeholder.com/200x200/FF6B6B/FFFFFF?text=Hot+1",
+      "image": "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/2.png",
       "discount": "20% OFF"
     },
     {

@@ -8,37 +8,37 @@ class MoreSection extends StatelessWidget {
       "name": "コーヒーメーカー",
       "price": "¥12,800",
       "image": "https://via.placeholder.com/300x200/FD79A8/FFFFFF?text=More+1",
-      "description": "自宅で本格的なコーヒーを"
+      "description": "自宅で本格的なコーヒーを",
     },
     {
       "name": "ヨガマット",
       "price": "¥3,500",
       "image": "https://via.placeholder.com/300x200/FDCB6E/000000?text=More+2",
-      "description": "滑り止め付き高品質"
+      "description": "滑り止め付き高品質",
     },
     {
       "name": "デスクランプ",
       "price": "¥5,900",
       "image": "https://via.placeholder.com/300x200/6C5CE7/FFFFFF?text=More+3",
-      "description": "目に優しいLED照明"
+      "description": "目に優しいLED照明",
     },
     {
       "name": "ブレンダー",
       "price": "¥8,200",
       "image": "https://via.placeholder.com/300x200/00B894/FFFFFF?text=More+4",
-      "description": "パワフルな粉砕力"
+      "description": "パワフルな粉砕力",
     },
     {
       "name": "トラベルバッグ",
       "price": "¥9,800",
       "image": "https://via.placeholder.com/300x200/E17055/FFFFFF?text=More+5",
-      "description": "大容量で軽量"
+      "description": "大容量で軽量",
     },
     {
       "name": "ワイヤレスマウス",
       "price": "¥2,500",
       "image": "https://via.placeholder.com/300x200/0984E3/FFFFFF?text=More+6",
-      "description": "静音設計で快適"
+      "description": "静音設計で快適",
     },
   ];
 
@@ -55,10 +55,7 @@ class MoreSection extends StatelessWidget {
             children: [
               Text(
                 'もっと見る',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Icon(Icons.arrow_forward_ios, size: 18),
             ],
@@ -78,7 +75,9 @@ class MoreSection extends StatelessWidget {
                 child: Row(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(10),
+                      ),
                       child: Image.network(
                         moreProducts[index]["image"],
                         width: 120,
