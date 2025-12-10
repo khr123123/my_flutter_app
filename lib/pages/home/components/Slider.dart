@@ -16,17 +16,17 @@ class _SliderSectionState extends State<SliderSection> {
   final List<Map<String, String>> _banners = [
     {
       "image":
-          "https://image.uniqlo.com/UQ/ST3/asia/imagesgoods/464953/item/asiaGoods_464953_sub14.jpg?width=750",
+          "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/3.jpg",
       "title": "春季コレクション",
     },
     {
       "image":
-          "https://www.muji.com/wp-content/uploads/sites/2/2024/01/main_visual.jpg",
+          "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/2.png",
       "title": "無印良品 新生活フェア",
     },
     {
       "image":
-          "https://image.uniqlo.com/UQ/ST3/us/imagesother/2024fw/warmth/01.jpg?width=1200",
+          "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/1.png",
       "title": "期間限定セール",
     },
   ];
@@ -63,7 +63,7 @@ class _SliderSectionState extends State<SliderSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 200,
       child: Stack(
         children: [
