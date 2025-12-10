@@ -7,29 +7,25 @@ class SuggestionSection extends StatelessWidget {
     {
       "name": "メンズTシャツ",
       "price": "¥2,980",
-      "image":
-          "https://via.placeholder.com/200x200/FFEAA7/000000?text=Suggest+1",
+      "image": "assets/item/item1.jpg",
       "rating": 4.5,
     },
     {
       "name": "レディースワンピース",
       "price": "¥5,800",
-      "image":
-          "https://via.placeholder.com/200x200/DFE6E9/000000?text=Suggest+2",
+      "image": "assets/item/item7.jpg",
       "rating": 4.8,
     },
     {
       "name": "スニーカー",
       "price": "¥7,500",
-      "image":
-          "https://via.placeholder.com/200x200/74B9FF/FFFFFF?text=Suggest+3",
+      "image": "assets/item/item6.jpg",
       "rating": 4.3,
     },
     {
       "name": "バックパック",
       "price": "¥4,200",
-      "image":
-          "https://via.placeholder.com/200x200/A29BFE/FFFFFF?text=Suggest+4",
+      "image": "assets/item/item4.jpg",
       "rating": 4.6,
     },
   ];
@@ -87,7 +83,7 @@ class SuggestionSection extends StatelessWidget {
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(10),
                       ),
-                      child: Image.network(
+                      child: Image.asset(
                         suggestions[index]["image"],
                         width: double.infinity,
                         height: 140,

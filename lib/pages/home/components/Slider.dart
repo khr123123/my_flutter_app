@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:my_app/api/HomeApi.dart';
+// import 'package:my_app/api/HomeApi.dart';
 import 'package:my_app/viewmodels/BannerItem.dart';
 
 class SliderSection extends StatefulWidget {
@@ -16,16 +16,22 @@ class _SliderSectionState extends State<SliderSection> {
   int _currentPage = 0;
   Timer? _timer;
 
-  final List<BannerItem> _banners = [];
+  final List<BannerItem> _banners = [
+    BannerItem(id: "1", imgUrl: 'assets/banner/youyi1.jpg'),
+    BannerItem(id: "2", imgUrl: 'assets/banner/youyi2.jpg'),
+    BannerItem(id: "3", imgUrl: 'assets/banner/youyi3.jpg'),
+    BannerItem(id: "4", imgUrl: 'assets/banner/youyi4.jpg'),
+    BannerItem(id: "5", imgUrl: 'assets/banner/youyi5.jpg'),
+  ];
 
   @override
   void initState() {
     super.initState();
-    getBannerList().then((value) {
-      setState(() {
-        _banners.addAll(value);
-      });
-    });
+    // getBannerList().then((value) {
+    //   setState(() {
+    //     _banners.addAll(value);
+    //   });
+    // });
     _startAutoPlay();
   }
 
@@ -73,7 +79,7 @@ class _SliderSectionState extends State<SliderSection> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: NetworkImage(_banners[index].imgUrl),
+                    image: AssetImage(_banners[index].imgUrl),
                     fit: BoxFit.cover,
                   ),
                 ),

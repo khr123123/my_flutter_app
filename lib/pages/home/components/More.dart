@@ -5,40 +5,52 @@ class MoreSection extends StatelessWidget {
 
   final List<Map<String, dynamic>> moreProducts = const [
     {
-      "name": "コーヒーメーカー",
+      "name": "アパレルストア",
       "price": "¥12,800",
-      "image": "https://via.placeholder.com/300x200/FD79A8/FFFFFF?text=More+1",
-      "description": "自宅で本格的なコーヒーを",
+      "image": "assets/item/item1.jpg",
+      "description": "洋服・アクセサリー専門店",
     },
     {
-      "name": "ヨガマット",
-      "price": "¥3,500",
-      "image": "https://via.placeholder.com/300x200/FDCB6E/000000?text=More+2",
-      "description": "滑り止め付き高品質",
+      "name": "スーパーマーケット",
+      "price": "¥12,800",
+      "image": "assets/item/item2.jpg",
+      "description": "生鮮食品から日用品まで",
     },
     {
-      "name": "デスクランプ",
-      "price": "¥5,900",
-      "image": "https://via.placeholder.com/300x200/6C5CE7/FFFFFF?text=More+3",
-      "description": "目に優しいLED照明",
+      "name": "家電量販店",
+      "price": "¥12,800",
+      "image": "assets/item/item3.jpg",
+      "description": "最新家電からスマホまで",
     },
     {
-      "name": "ブレンダー",
-      "price": "¥8,200",
-      "image": "https://via.placeholder.com/300x200/00B894/FFFFFF?text=More+4",
-      "description": "パワフルな粉砕力",
+      "name": "書店・文房具",
+      "price": "¥12,800",
+      "image": "assets/item/item4.jpg",
+      "description": "本と文具の専門店",
     },
     {
-      "name": "トラベルバッグ",
-      "price": "¥9,800",
-      "image": "https://via.placeholder.com/300x200/E17055/FFFFFF?text=More+5",
-      "description": "大容量で軽量",
+      "name": "ドラッグストア",
+      "price": "¥12,800",
+      "image": "assets/item/item5.jpg",
+      "description": "医薬品・健康食品・コスメ",
     },
     {
-      "name": "ワイヤレスマウス",
-      "price": "¥2,500",
-      "image": "https://via.placeholder.com/300x200/0984E3/FFFFFF?text=More+6",
-      "description": "静音設計で快適",
+      "name": "ホームセンター",
+      "price": "¥12,800",
+      "image": "assets/item/item6.jpg",
+      "description": "工具・建材・ガーデニング",
+    },
+    {
+      "name": "ベーカリー",
+      "price": "¥12,800",
+      "image": "assets/item/item7.jpg",
+      "description": "焼きたてパンの専門店",
+    },
+    {
+      "name": "スポーツショップ",
+      "price": "¥12,800",
+      "image": "assets/item/item8.jpg",
+      "description": "運動器具・ウェア",
     },
   ];
 
@@ -78,7 +90,7 @@ class MoreSection extends StatelessWidget {
                       borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(10),
                       ),
-                      child: Image.network(
+                      child: Image.asset(
                         moreProducts[index]["image"],
                         width: 120,
                         height: 100,

@@ -1,5 +1,5 @@
 ﻿class ApiConstant {
-  static const String baseUrl = "https://meikou-api.itheima.net";
+  static const String baseUrl = "http://meikou-api.itheima.net";
   static const int timeout = 10;
   static const String successCode = "1";
   static const String errorCode = "0";

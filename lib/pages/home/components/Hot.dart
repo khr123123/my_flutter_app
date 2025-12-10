@@ -7,26 +7,26 @@ class HotSection extends StatelessWidget {
     {
       "name": "ワイヤレスイヤホン",
       "price": "¥8,900",
-      "image": "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meituan/2.png",
-      "discount": "20% OFF"
+      "image": "assets/item/item2.jpg",
+      "discount": "20% OFF",
     },
     {
       "name": "スマートウォッチ",
       "price": "¥15,800",
-      "image": "https://via.placeholder.com/200x200/4ECDC4/FFFFFF?text=Hot+2",
-      "discount": "15% OFF"
+      "image": "assets/item/item3.jpg",
+      "discount": "15% OFF",
     },
     {
       "name": "Bluetoothスピーカー",
       "price": "¥6,500",
-      "image": "https://via.placeholder.com/200x200/45B7D1/FFFFFF?text=Hot+3",
-      "discount": "30% OFF"
+      "image": "assets/item/item5.jpg",
+      "discount": "30% OFF",
     },
     {
       "name": "ノートパソコン",
       "price": "¥89,000",
-      "image": "https://via.placeholder.com/200x200/96CEB4/FFFFFF?text=Hot+4",
-      "discount": "10% OFF"
+      "image": "assets/item/item4.jpg",
+      "discount": "10% OFF",
     },
   ];
 
@@ -43,14 +43,15 @@ class HotSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.local_fire_department, color: Colors.red, size: 28),
+                  Icon(
+                    Icons.local_fire_department,
+                    color: Colors.red,
+                    size: 28,
+                  ),
                   SizedBox(width: 5),
                   Text(
                     '人気商品',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -63,7 +64,7 @@ class HotSection extends StatelessWidget {
             ],
           ),
           SizedBox(height: 10),
-          Container(
+          SizedBox(
             height: 240,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -82,8 +83,10 @@ class HotSection extends StatelessWidget {
                       Stack(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                            child: Image.network(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(10),
+                            ),
+                            child: Image.asset(
                               hotProducts[index]["image"],
                               width: 160,
                               height: 160,
@@ -94,7 +97,10 @@ class HotSection extends StatelessWidget {
                             top: 8,
                             left: 8,
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.red,
                                 borderRadius: BorderRadius.circular(4),
