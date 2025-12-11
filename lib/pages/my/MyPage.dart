@@ -10,7 +10,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  final pb = PocketBase('http://your-pocketbase-url');
+  final pb = PocketBase('http://127.0.0.1:8090');
   bool isLoggedIn = false;
   String userName = 'ゲスト';
   String userEmail = '';
