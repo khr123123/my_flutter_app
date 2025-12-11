@@ -3,7 +3,7 @@ import 'package:pocketbase/pocketbase.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
-  
+
   @override
   _CategoryPageState createState() => _CategoryPageState();
 }
@@ -21,19 +21,25 @@ class _CategoryPageState extends State<CategoryPage> {
     loadMainCategories();
   }
 
+  // 加载主分类，同时展开子分类
   Future<void> loadMainCategories() async {
     try {
-      final records = await pb.collection('categories').getFullList(
-        filter: 'id ~ "00000000000000"',
-        sort: 'sort',
-      );
-      
+      final records = await pb
+          .collection('categories')
+          .getFullList(
+            filter: 'childIds != "[]"', // 只获取有子分类的
+            sort: 'sort',
+            expand: 'childIds', // 获取子分类
+          );
+
       setState(() {
         mainCategories = records;
         isLoading = false;
+
+        // 默认选中第一个主分类
         if (mainCategories.isNotEmpty) {
           selectedMainCategoryId = mainCategories[0].id;
-          loadSubCategories(mainCategories[0].data['childIds']);
+          subCategories = List.from(mainCategories[0].expand['childIds'] ?? []);
         }
       });
     } catch (e) {
@@ -42,14 +48,14 @@ class _CategoryPageState extends State<CategoryPage> {
     }
   }
 
-  void loadSubCategories(List<dynamic> childIds) {
+  // 切换子分类
+  void loadSubCategories(dynamic expandedChildIds) {
     setState(() {
-      subCategories = mainCategories
-          .where((cat) => childIds.contains(cat.id))
-          .toList();
+      subCategories = List.from(expandedChildIds ?? []);
     });
   }
 
+  // 获取图片 URL
   String getImageUrl(dynamic record, String filename) {
     return '${pb.baseUrl}/api/files/${record.collectionId}/${record.id}/$filename';
   }
@@ -84,21 +90,25 @@ class _CategoryPageState extends State<CategoryPage> {
                     itemBuilder: (context, index) {
                       final category = mainCategories[index];
                       final isSelected = selectedMainCategoryId == category.id;
-                      
+
                       return GestureDetector(
                         onTap: () {
                           setState(() {
                             selectedMainCategoryId = category.id;
-                            loadSubCategories(category.data['childIds']);
+                            loadSubCategories(category.expand['childIds']);
                           });
                         },
                         child: Container(
                           height: 80,
                           decoration: BoxDecoration(
-                            color: isSelected ? Colors.white : Colors.transparent,
+                            color: isSelected
+                                ? Colors.white
+                                : Colors.transparent,
                             border: Border(
                               left: BorderSide(
-                                color: isSelected ? Colors.red : Colors.transparent,
+                                color: isSelected
+                                    ? Colors.red
+                                    : Colors.transparent,
                                 width: 3,
                               ),
                             ),
@@ -107,11 +117,15 @@ class _CategoryPageState extends State<CategoryPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                category.data['name'],
+                                category.data['name'] ?? '',
                                 style: TextStyle(
                                   fontSize: 13,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                  color: isSelected ? Colors.black : Colors.grey[600],
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                  color: isSelected
+                                      ? Colors.black
+                                      : Colors.grey[600],
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -122,101 +136,108 @@ class _CategoryPageState extends State<CategoryPage> {
                     },
                   ),
                 ),
-                
-                // 右侧子分类网格
-                Expanded(
-                  child: subCategories.isEmpty
-                      ? const Center(child: Text('サブカテゴリがありません'))
-                      : GridView.builder(
-                          padding: const EdgeInsets.all(16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.75,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                          ),
-                          itemCount: subCategories.length,
-                          itemBuilder: (context, index) {
-                            final subCategory = subCategories[index];
-                            final imageUrl = getImageUrl(
-                              subCategory,
-                              subCategory.data['picture'],
-                            );
-                            
-                            return GestureDetector(
-                              onTap: () {
-                                // 导航到商品列表页
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductListPage(
-                                      categoryId: subCategory.id,
-                                      categoryName: subCategory.data['name'],
-                                    ),
+           Expanded(
+  child: subCategories.isEmpty
+      ? const Center(child: Text('サブカテゴリがありません'))
+      : GridView.builder(
+          padding: const EdgeInsets.all(16),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.85, // 宽高比可根据需要调整
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+          ),
+          itemCount: subCategories.length,
+          itemBuilder: (context, index) {
+            final subCategory = subCategories[index];
+            final imageUrl = getImageUrl(
+              subCategory,
+              subCategory.data['picture'] ?? '',
+            );
+
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductListPage(
+                      categoryId: subCategory.id,
+                      categoryName: subCategory.data['name'] ?? '',
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // 图片区域用 Flexible 避免 Column 报错
+                    Flexible(
+                      flex: 3,
+                      child: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.contain, // 不剪裁，保持原比例
+                              errorBuilder: (context, error, stack) {
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.image,
+                                    size: 40,
                                   ),
                                 );
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.1),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // 图片
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(8),
-                                      ),
-                                      child: Image.network(
-                                        imageUrl,
-                                        height: 140,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stack) {
-                                          return Container(
-                                            height: 140,
-                                            color: Colors.grey[200],
-                                            child: const Icon(Icons.image, size: 40),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    // 名称
-                                    Padding(
-                                      padding: const EdgeInsets.all(12),
-                                      child: Text(
-                                        subCategory.data['name'],
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            )
+                          : Container(
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.image,
+                                size: 40,
                               ),
-                            );
-                          },
+                            ),
+                    ),
+                    // 名称区域
+                    Flexible(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          subCategory.data['name'] ?? '',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
                         ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+            );
+          },
+        ),
+),
               ],
             ),
     );
   }
 }
 
-// 商品列表页面
+// 商品列表页面保持原样
 class ProductListPage extends StatefulWidget {
   final String categoryId;
   final String categoryName;
@@ -232,7 +253,7 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-  final pb = PocketBase('http://your-pocketbase-url');
+  final pb = PocketBase('http://127.0.0.1:8090');
   List<dynamic> products = [];
   bool isLoading = true;
 
@@ -244,11 +265,13 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Future<void> loadProducts() async {
     try {
-      final records = await pb.collection('products').getFullList(
-        filter: 'category_id = "${widget.categoryId}"',
-        expand: 'category_id',
-      );
-      
+      final records = await pb
+          .collection('products')
+          .getFullList(
+            filter: 'category_id = "${widget.categoryId}"',
+            expand: 'category_id',
+          );
+
       setState(() {
         products = records;
         isLoading = false;
@@ -290,159 +313,133 @@ class _ProductListPageState extends State<ProductListPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.red))
           : products.isEmpty
-              ? const Center(child: Text('商品がありません'))
-              : GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.6,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    final imageUrl = getProductImageUrl(product);
-                    
-                    return GestureDetector(
-                      onTap: () {
-                        // 导航到商品详情页
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // 商品图片
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Stack(
-                              children: [
-                                Image.network(
-                                  imageUrl,
+          ? const Center(child: Text('商品がありません'))
+          : GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.6,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                final imageUrl = getProductImageUrl(product);
+
+                return GestureDetector(
+                  onTap: () {},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Stack(
+                          children: [
+                            Image.network(
+                              imageUrl,
+                              height: 220,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stack) {
+                                return Container(
                                   height: 220,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stack) {
-                                    return Container(
-                                      height: 220,
-                                      color: Colors.grey[200],
-                                      child: const Icon(Icons.image, size: 50),
-                                    );
-                                  },
-                                ),
-                                // 新品标签
-                                if (product.data['is_new'] == true)
-                                  Positioned(
-                                    top: 8,
-                                    left: 8,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: const Text(
-                                        '新商品',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                // 促销标签
-                                if (product.data['is_sale'] == true)
-                                  Positioned(
-                                    top: 8,
-                                    right: 8,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.orange,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: const Text(
-                                        'SALE',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                                  color: Colors.grey[200],
+                                  child: const Icon(Icons.image, size: 50),
+                                );
+                              },
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          // 商品名称
-                          Text(
-                            product.data['name'],
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          // 价格
-                          Row(
-                            children: [
-                              Text(
-                                '¥${product.data['price'].toString()}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              if (product.data['original_price'] != null &&
-                                  product.data['original_price'] > product.data['price'])
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 6),
-                                  child: Text(
-                                    '¥${product.data['original_price']}',
+                            if (product.data['is_new'] == true)
+                              Positioned(
+                                top: 8,
+                                left: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Text(
+                                    '新商品',
                                     style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[500],
-                                      decoration: TextDecoration.lineThrough,
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          // 评分和销量
-                          Row(
-                            children: [
-                              const Icon(Icons.star, size: 14, color: Colors.orange),
-                              const SizedBox(width: 2),
-                              Text(
-                                product.data['rating'].toString(),
-                                style: const TextStyle(fontSize: 11),
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${product.data['sold_count']}販売',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey[600],
+                            if (product.data['is_sale'] == true)
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Text(
+                                    'SALE',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        product.data['name'] ?? '',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            '¥${product.data['price'].toString()}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.red,
+                            ),
                           ),
+                          if (product.data['original_price'] != null &&
+                              product.data['original_price'] >
+                                  product.data['price'])
+                            Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: Text(
+                                '¥${product.data['original_price']}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[500],
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
-                    );
-                  },
-                ),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 }
