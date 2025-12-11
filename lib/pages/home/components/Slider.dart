@@ -1,11 +1,13 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:my_app/api/HomeApi.dart';
 import 'dart:async';
 
 // import 'package:my_app/api/HomeApi.dart';
 import 'package:my_app/viewmodels/BannerItem.dart';
 
 class SliderSection extends StatefulWidget {
-  const SliderSection({super.key});
+  final List<BannerItem> banners;
+  const SliderSection({super.key, required this.banners});
 
   @override
   _SliderSectionState createState() => _SliderSectionState();
@@ -16,28 +18,15 @@ class _SliderSectionState extends State<SliderSection> {
   int _currentPage = 0;
   Timer? _timer;
 
-  final List<BannerItem> _banners = [
-    BannerItem(id: "1", imgUrl: 'assets/banner/youyi1.jpg'),
-    BannerItem(id: "2", imgUrl: 'assets/banner/youyi2.jpg'),
-    BannerItem(id: "3", imgUrl: 'assets/banner/youyi3.jpg'),
-    BannerItem(id: "4", imgUrl: 'assets/banner/youyi4.jpg'),
-    BannerItem(id: "5", imgUrl: 'assets/banner/youyi5.jpg'),
-  ];
-
   @override
   void initState() {
     super.initState();
-    // getBannerList().then((value) {
-    //   setState(() {
-    //     _banners.addAll(value);
-    //   });
-    // });
     _startAutoPlay();
   }
 
   void _startAutoPlay() {
     _timer = Timer.periodic(Duration(seconds: 3), (timer) {
-      if (_currentPage < _banners.length - 1) {
+      if (_currentPage < widget.banners.length - 1) {
         _currentPage++;
       } else {
         _currentPage = 0;
@@ -62,7 +51,7 @@ class _SliderSectionState extends State<SliderSection> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
+      height: 230,
       child: Stack(
         children: [
           PageView.builder(
@@ -72,14 +61,14 @@ class _SliderSectionState extends State<SliderSection> {
                 _currentPage = index;
               });
             },
-            itemCount: _banners.length,
+            itemCount: widget.banners.length,
             itemBuilder: (context, index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: AssetImage(_banners[index].imgUrl),
+                    image: NetworkImage(widget.banners[index].imgUrl),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -93,7 +82,7 @@ class _SliderSectionState extends State<SliderSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                _banners.length,
+                widget.banners.length,
                 (index) => Container(
                   margin: EdgeInsets.symmetric(horizontal: 4),
                   width: _currentPage == index ? 20 : 8,

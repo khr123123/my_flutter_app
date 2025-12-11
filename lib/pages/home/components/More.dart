@@ -1,67 +1,21 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:my_app/viewmodels/Recommend.dart';
 
 class MoreSection extends StatelessWidget {
-  const MoreSection({super.key});
+  const MoreSection({super.key, required this.recommendList});
 
-  final List<Map<String, dynamic>> moreProducts = const [
-    {
-      "name": "アパレルストア",
-      "price": "¥12,800",
-      "image": "assets/item/item1.jpg",
-      "description": "洋服・アクセサリー専門店",
-    },
-    {
-      "name": "スーパーマーケット",
-      "price": "¥12,800",
-      "image": "assets/item/item2.jpg",
-      "description": "生鮮食品から日用品まで",
-    },
-    {
-      "name": "家電量販店",
-      "price": "¥12,800",
-      "image": "assets/item/item3.jpg",
-      "description": "最新家電からスマホまで",
-    },
-    {
-      "name": "書店・文房具",
-      "price": "¥12,800",
-      "image": "assets/item/item4.jpg",
-      "description": "本と文具の専門店",
-    },
-    {
-      "name": "ドラッグストア",
-      "price": "¥12,800",
-      "image": "assets/item/item5.jpg",
-      "description": "医薬品・健康食品・コスメ",
-    },
-    {
-      "name": "ホームセンター",
-      "price": "¥12,800",
-      "image": "assets/item/item6.jpg",
-      "description": "工具・建材・ガーデニング",
-    },
-    {
-      "name": "ベーカリー",
-      "price": "¥12,800",
-      "image": "assets/item/item7.jpg",
-      "description": "焼きたてパンの専門店",
-    },
-    {
-      "name": "スポーツショップ",
-      "price": "¥12,800",
-      "image": "assets/item/item8.jpg",
-      "description": "運動器具・ウェア",
-    },
-  ];
+  final List<RecommendItem> recommendList;
 
   @override
   Widget build(BuildContext context) {
+    // 空数据处理
     return Container(
       padding: EdgeInsets.all(15),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 标题
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -72,12 +26,35 @@ class MoreSection extends StatelessWidget {
               Icon(Icons.arrow_forward_ios, size: 18),
             ],
           ),
+
           SizedBox(height: 15),
+
+          // 列表展示商品
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: moreProducts.length,
+            itemCount: recommendList.length,
             itemBuilder: (context, index) {
+              final item = recommendList[index];
+
+              // 判断图片是否是网络资源
+              Widget imageWidget;
+              if (item.picture.startsWith('http')) {
+                imageWidget = Image.network(
+                  item.picture,
+                  width: 120,
+                  height: 100,
+                  fit: BoxFit.cover,
+                );
+              } else {
+                imageWidget = Image.asset(
+                  item.picture,
+                  width: 120,
+                  height: 100,
+                  fit: BoxFit.cover,
+                );
+              }
+
               return Container(
                 margin: EdgeInsets.only(bottom: 15),
                 decoration: BoxDecoration(
@@ -86,17 +63,15 @@ class MoreSection extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
+                    // 左侧图片
                     ClipRRect(
                       borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(10),
                       ),
-                      child: Image.asset(
-                        moreProducts[index]["image"],
-                        width: 120,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                      child: imageWidget,
                     ),
+
+                    // 中间文字区域
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(12),
@@ -104,23 +79,27 @@ class MoreSection extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              moreProducts[index]["name"],
+                              item.name,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 4),
                             Text(
-                              moreProducts[index]["description"],
+                              item.name,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey.shade600,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 8),
                             Text(
-                              moreProducts[index]["price"],
+                              '¥${item.price}',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -131,6 +110,8 @@ class MoreSection extends StatelessWidget {
                         ),
                       ),
                     ),
+
+                    // 右边箭头
                     Icon(Icons.chevron_right, color: Colors.grey),
                     SizedBox(width: 8),
                   ],

@@ -1,37 +1,18 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:my_app/viewmodels/SpecialRecommend.dart';
 
 class HotSection extends StatelessWidget {
-  const HotSection({super.key});
+  const HotSection({super.key, required this.preferenceList});
 
-  final List<Map<String, dynamic>> hotProducts = const [
-    {
-      "name": "ワイヤレスイヤホン",
-      "price": "¥8,900",
-      "image": "assets/item/item2.jpg",
-      "discount": "20% OFF",
-    },
-    {
-      "name": "スマートウォッチ",
-      "price": "¥15,800",
-      "image": "assets/item/item3.jpg",
-      "discount": "15% OFF",
-    },
-    {
-      "name": "Bluetoothスピーカー",
-      "price": "¥6,500",
-      "image": "assets/item/item5.jpg",
-      "discount": "30% OFF",
-    },
-    {
-      "name": "ノートパソコン",
-      "price": "¥89,000",
-      "image": "assets/item/item4.jpg",
-      "discount": "10% OFF",
-    },
-  ];
+  final SpecialRecommend preferenceList;
 
   @override
   Widget build(BuildContext context) {
+    // 假设我们取第一个 subType 的商品列表
+    final items = preferenceList.subTypes.isNotEmpty
+        ? preferenceList.subTypes[0].goodsItems.items
+        : <GoodsItem>[];
+
     return Container(
       padding: EdgeInsets.all(15),
       color: Colors.white,
@@ -65,11 +46,12 @@ class HotSection extends StatelessWidget {
           ),
           SizedBox(height: 10),
           SizedBox(
-            height: 240,
+            height: 230,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: hotProducts.length,
+              itemCount: items.length,
               itemBuilder: (context, index) {
+                final product = items[index];
                 return Container(
                   width: 160,
                   margin: EdgeInsets.only(right: 15),
@@ -86,35 +68,36 @@ class HotSection extends StatelessWidget {
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(10),
                             ),
-                            child: Image.asset(
-                              hotProducts[index]["image"],
+                            child: Image.network(
+                              product.picture,
                               width: 160,
                               height: 160,
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Positioned(
-                            top: 8,
-                            left: 8,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                hotProducts[index]["discount"],
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                          if (product.discount != null)
+                            Positioned(
+                              top: 8,
+                              left: 8,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  product.discount ?? '',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                       Padding(
@@ -123,14 +106,14 @@ class HotSection extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              hotProducts[index]["name"],
+                              product.name,
                               style: TextStyle(fontSize: 14),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 4),
                             Text(
-                              hotProducts[index]["price"],
+                              '¥${product.price}',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

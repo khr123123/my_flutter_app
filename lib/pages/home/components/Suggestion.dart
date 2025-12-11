@@ -1,43 +1,28 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:my_app/viewmodels/SpecialRecommend.dart';
 
 class SuggestionSection extends StatelessWidget {
-  const SuggestionSection({super.key});
+  const SuggestionSection({super.key, required this.preferenceList});
 
-  final List<Map<String, dynamic>> suggestions = const [
-    {
-      "name": "メンズTシャツ",
-      "price": "¥2,980",
-      "image": "assets/item/item1.jpg",
-      "rating": 4.5,
-    },
-    {
-      "name": "レディースワンピース",
-      "price": "¥5,800",
-      "image": "assets/item/item7.jpg",
-      "rating": 4.8,
-    },
-    {
-      "name": "スニーカー",
-      "price": "¥7,500",
-      "image": "assets/item/item6.jpg",
-      "rating": 4.3,
-    },
-    {
-      "name": "バックパック",
-      "price": "¥4,200",
-      "image": "assets/item/item4.jpg",
-      "rating": 4.6,
-    },
-  ];
+  final SpecialRecommend preferenceList;
 
   @override
   Widget build(BuildContext context) {
+    final items = (preferenceList.subTypes.length > 1)
+        ? preferenceList.subTypes[1].goodsItems.items
+        : <GoodsItem>[];
+
+    if (items.isEmpty) {
+      return SizedBox();
+    }
+
     return Container(
       padding: EdgeInsets.all(15),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 标题
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,83 +36,86 @@ class SuggestionSection extends StatelessWidget {
                   ),
                 ],
               ),
-              TextButton(
-                onPressed: () {
-                  print('View all suggestions');
-                },
-                child: Text('もっと見る >'),
-              ),
+              TextButton(onPressed: () {}, child: Text("もっと見る >")),
             ],
           ),
+
           SizedBox(height: 10),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 15,
-              crossAxisSpacing: 15,
-              childAspectRatio: 0.75,
-            ),
-            itemCount: suggestions.length,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade200),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(10),
+
+          // 横向滑动推荐
+          SizedBox(
+            height: 250,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final product = items[index];
+
+                return Container(
+                  width: 160,
+                  margin: EdgeInsets.only(right: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 上方图片（与你的热门页面完全一致）
+                      ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(10),
+                        ),
+                        child: Image.network(
+                          product.picture,
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Image.asset(
-                        suggestions[index]["image"],
-                        width: double.infinity,
-                        height: 140,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            suggestions[index]["name"],
-                            style: TextStyle(fontSize: 14),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.amber, size: 16),
-                              SizedBox(width: 4),
-                              Text(
-                                '${suggestions[index]["rating"]}',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            suggestions[index]["price"],
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
+
+                      // 下方文字内容
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // 名称
+                            Text(
+                              product.name,
+                              style: TextStyle(fontSize: 14),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 4),
+
+                            // ⭐ 评分（新增）
+                            Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.amber, size: 16),
+                                SizedBox(width: 4),
+                                Text("4.5", style: TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                            SizedBox(height: 4),
+
+                            // 价格
+                            Text(
+                              "¥${product.price}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

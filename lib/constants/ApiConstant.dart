@@ -5,8 +5,10 @@
   static const String errorCode = "0";
 
   static const String bannerListUrl = "/home/banner";
+  static const String homeCategoryUrl = "/home/category/head";
   static const String hotPreferenceUrl = "/hot/preference";
-  static const String hotCategoryUrl = "/hot/category";
+  static const String specialRecommendUrl = "/home/recommend";
+
   static const String productListUrl = "/product/list";
   static const String productDetailUrl = "/product/detail";
   static const String cartListUrl = "/cart/list";

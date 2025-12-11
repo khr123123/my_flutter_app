@@ -1,18 +1,10 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:my_app/viewmodels/CategoryItem.dart';
 
 class CategorySection extends StatelessWidget {
-  const CategorySection({super.key});
-
-  final List<Map<String, dynamic>> categories = const [
-    {"name": "ファッション", "icon": Icons.checkroom, "color": Colors.pink},
-    {"name": "電子機器", "icon": Icons.phone_android, "color": Colors.blue},
-    {"name": "食品", "icon": Icons.restaurant, "color": Colors.orange},
-    {"name": "家具", "icon": Icons.weekend, "color": Colors.brown},
-    {"name": "美容", "icon": Icons.face, "color": Colors.purple},
-    {"name": "スポーツ", "icon": Icons.sports_basketball, "color": Colors.green},
-    {"name": "本", "icon": Icons.book, "color": Colors.teal},
-    {"name": "その他", "icon": Icons.more_horiz, "color": Colors.grey},
-  ];
+  final List<CategoryItem> categoryList;
+  final void Function(CategoryItem)? onTap;
+  const CategorySection({super.key, required this.categoryList, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -36,30 +28,30 @@ class CategorySection extends StatelessWidget {
               crossAxisSpacing: 15,
               childAspectRatio: 0.85,
             ),
-            itemCount: categories.length,
+            itemCount: categoryList.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  print('Category tapped: ${categories[index]["name"]}');
+                  if (onTap != null) {
+                    onTap!(categoryList[index]); // 调用父组件回调
+                  }
                 },
                 child: Column(
                   children: [
                     Container(
                       width: 60,
                       height: 60,
-                      decoration: BoxDecoration(
-                        color: categories[index]["color"].withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        categories[index]["icon"],
-                        size: 32,
-                        color: categories[index]["color"],
+                      alignment: Alignment.center,
+                      child: Image.network(
+                        categoryList[index].picture,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     SizedBox(height: 8),
                     Text(
-                      categories[index]["name"],
+                      categoryList[index].name,
                       style: TextStyle(fontSize: 12),
                       textAlign: TextAlign.center,
                       maxLines: 1,
