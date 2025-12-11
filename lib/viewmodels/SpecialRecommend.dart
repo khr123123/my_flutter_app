@@ -3,7 +3,11 @@
   final String title;
   final List<SubType> subTypes;
 
-  SpecialRecommend({required this.id, required this.title, required this.subTypes});
+  SpecialRecommend({
+    required this.id,
+    required this.title,
+    required this.subTypes,
+  });
 
   factory SpecialRecommend.fromJson(Map<String, dynamic> json) {
     return SpecialRecommend(

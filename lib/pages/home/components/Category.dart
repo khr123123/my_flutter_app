@@ -14,9 +14,15 @@ class CategorySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'カテゴリ',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Icon(Icons.category_outlined, color: Colors.teal, size: 28),
+              SizedBox(width: 5),
+              Text(
+                'カテゴリ',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
           SizedBox(height: 15),
           GridView.builder(

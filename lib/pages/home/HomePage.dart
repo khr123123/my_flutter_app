@@ -70,13 +70,7 @@ class _HomepageState extends State<Homepage> {
     MyPage(),
   ];
 
-  final List<BannerItem> _banners = [
-    BannerItem(id: "1", imgUrl: 'assets/banner/youyi1.jpg'),
-    BannerItem(id: "2", imgUrl: 'assets/banner/youyi2.jpg'),
-    BannerItem(id: "3", imgUrl: 'assets/banner/youyi3.jpg'),
-    BannerItem(id: "4", imgUrl: 'assets/banner/youyi4.jpg'),
-    BannerItem(id: "5", imgUrl: 'assets/banner/youyi5.jpg'),
-  ];
+  final List<BannerItem> _banners = [];
   // 分类数据
   final List<CategoryItem> _categoryList = [];
   // 热门偏好数据
@@ -94,7 +88,7 @@ class _HomepageState extends State<Homepage> {
       });
     });
     // 初始化分类数据
-    getHomeCategoryList().then((value) {
+    getHomeCategoryTree().then((value) {
       setState(() {
         _categoryList.addAll(value);
         _categoryList.add(

@@ -4,6 +4,7 @@ import 'dart:async';
 
 // import 'package:my_app/api/HomeApi.dart';
 import 'package:my_app/viewmodels/BannerItem.dart';
+import 'package:pocketbase/src/dtos/record_model.dart';
 
 class SliderSection extends StatefulWidget {
   final List<BannerItem> banners;
