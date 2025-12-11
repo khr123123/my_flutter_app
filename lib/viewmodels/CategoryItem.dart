@@ -2,13 +2,13 @@
   String id;
   String name;
   String picture;
-  List<CategoryItem>? children;
+  List<CategoryItem> children;
   CategoryItem({
     required this.id,
     required this.name,
     required this.picture,
-    this.children,
-  });
+    List<CategoryItem>? children,
+  }) : children = children ?? [];
 
   factory CategoryItem.fromJson(Map<String, dynamic> json) {
     return CategoryItem(

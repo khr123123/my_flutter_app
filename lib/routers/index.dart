@@ -7,5 +7,5 @@ Widget getRouterWidget() {
 }
 
 Map<String, WidgetBuilder> getRouterMap() {
-  return {'/': (context) => Homepage(), '/login': (context) => Loginpage()};
+  return {'/': (context) => Homepage(), '/login': (context) => LoginPage()};
 }

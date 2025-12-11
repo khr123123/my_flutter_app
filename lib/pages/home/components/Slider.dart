@@ -1,10 +1,6 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:my_app/api/HomeApi.dart';
 import 'dart:async';
-
-// import 'package:my_app/api/HomeApi.dart';
 import 'package:my_app/viewmodels/BannerItem.dart';
-import 'package:pocketbase/src/dtos/record_model.dart';
 
 class SliderSection extends StatefulWidget {
   final List<BannerItem> banners;
@@ -52,7 +48,7 @@ class _SliderSectionState extends State<SliderSection> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 230,
+      height: 200,
       child: Stack(
         children: [
           PageView.builder(

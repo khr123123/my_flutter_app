@@ -30,38 +30,21 @@ Future<List<BannerItem>> getBannerList() async {
   }
 }
 
-Future<List<CategoryItem>> getHomeCategoryTree() async {
-  // 1. 先拉所有分类
-  final result = await pb.collection('categories').getFullList(sort: "sort");
-
-  // 2. 先把全部分类转成 CategoryItem（不含 children）
-  final temp = <String, CategoryItem>{};
-
-  for (var record in result) {
-    temp[record.id] = CategoryItem(
-      id: record.id,
-      name: record.data["name"],
-      picture: pbFileUrl(record, record.data["picture"]),
-      children: [],
-    );
+Future<List<CategoryItem>> getHomeCategory() async {
+  try {
+    final result = await pb
+        .collection('categories')
+        .getFullList(sort: "sort", filter: "childIds != '[]'");
+    return result.map((record) {
+      return CategoryItem.fromJson({
+        ...record.data,
+        "id": record.id,
+        "picture": pbFileUrl(record, record.data["picture"]),
+      });
+    }).toList();
+  } catch (e) {
+    rethrow;
   }
-
-  // 3. 组装 tree
-  List<CategoryItem> roots = [];
-
-  for (var record in result) {
-    final parentId = record.data["parent"];
-
-    if (parentId == null || parentId == "") {
-      // 顶级分类
-      roots.add(temp[record.id]!);
-    } else {
-      // 子分类：挂到父节点
-      temp[parentId]?.children?.add(temp[record.id]!);
-    }
-  }
-
-  return roots;
 }
 
 Future<SpecialRecommend> getHotPreferenceList() async {

@@ -70,7 +70,8 @@ class _HomepageState extends State<Homepage> {
     MyPage(),
   ];
 
-  final List<BannerItem> _banners = [];
+  // 轮播图数据
+  final List<BannerItem> _banners = []; 
   // 分类数据
   final List<CategoryItem> _categoryList = [];
   // 热门偏好数据
@@ -88,7 +89,7 @@ class _HomepageState extends State<Homepage> {
       });
     });
     // 初始化分类数据
-    getHomeCategoryTree().then((value) {
+    getHomeCategory().then((value) {
       setState(() {
         _categoryList.addAll(value);
         _categoryList.add(

@@ -50,9 +50,9 @@ class CategorySection extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Image.network(
                         categoryList[index].picture,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.contain, // ⭐ 完整显示 + 无裁剪 + 尽可能铺满
                       ),
                     ),
                     SizedBox(height: 8),
